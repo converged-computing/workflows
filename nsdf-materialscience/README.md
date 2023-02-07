@@ -66,6 +66,19 @@ $ docker tag test ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
 $ minikube image load ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
 ```
 
+#### Mount Data
+
+This isn't handled by flux-cloud yet, so for now we will do:
+
+```
+echo "Copying local volume to /tmp/data-volumes in minikube"
+# We don't care if this works or not - mkdir -p seems to bork
+minikube ssh -- mkdir -p /tmp/data-volumes
+
+minikube mount /tmp/data-volumes:/tmp/data-volumes
+```
+Leave that process running in a window and then open another terminal to interact with the cluster.
+
 #### Jobs
 
 Then run your job(s). Note that for MiniKube, if you want the image to be pulled (you don't load
@@ -76,12 +89,26 @@ to run your jobs:
 $ flux-cloud apply --cloud minikube
 ```
 
+If you run something and need to cancel and remove the job, just do:
+
+```bash
+$ kubectl delete -f data/minikube/k8s-size-4-local/.scripts/minicluster-size-4.yaml 
+minicluster.flux-framework.org "materials-science" deleted
+```
+
 And clean up:
 
 ```bash
 $ flux-cloud down --cloud minikube
 ```
 
+You can see the full log of output in the subdirectories of [data](data)
+along with experiment metadata files! In the window running the mount, you can
+press control+C to end it, and then see your results remain:
+
+```bash
+$ tree /tmp/data-volumes
+```
 
 ## Development Notes
 
@@ -102,6 +129,9 @@ think or assume data will be at a single mount-point, under subdirectories if ne
 You should also create an automated build for your container to deploy to an OCI
 registry like GitHub packages. You should ideally finish this step with a container in
 a registry, and knowing the working directory, environment, and entrypoint needed for your container to run.
+Also see the [container requirements](https://flux-framework.org/flux-operator/development/developer-guide.html#container-requirements) 
+set out by the operator. For example, to time commands
+you need to install `time`.
 
 #### 2. Local Testing
 

@@ -1,0 +1,113 @@
+Name:               minikube
+Roles:              control-plane
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=minikube
+                    kubernetes.io/os=linux
+                    minikube.k8s.io/commit=62e108c3dfdec8029a890ad6d8ef96b6461426dc
+                    minikube.k8s.io/name=minikube
+                    minikube.k8s.io/primary=true
+                    minikube.k8s.io/updated_at=2023_02_06T18_21_06_0700
+                    minikube.k8s.io/version=v1.26.1
+                    node-role.kubernetes.io/control-plane=
+                    node.kubernetes.io/exclude-from-external-load-balancers=
+Annotations:        kubeadm.alpha.kubernetes.io/cri-socket: unix:///var/run/cri-dockerd.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Mon, 06 Feb 2023 18:21:03 -0700
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  minikube
+  AcquireTime:     <unset>
+  RenewTime:       Mon, 06 Feb 2023 22:40:22 -0700
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Mon, 06 Feb 2023 22:38:50 -0700   Mon, 06 Feb 2023 18:21:02 -0700   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Mon, 06 Feb 2023 22:38:50 -0700   Mon, 06 Feb 2023 18:21:02 -0700   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Mon, 06 Feb 2023 22:38:50 -0700   Mon, 06 Feb 2023 18:21:02 -0700   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Mon, 06 Feb 2023 22:38:50 -0700   Mon, 06 Feb 2023 18:21:06 -0700   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.49.2
+  Hostname:    minikube
+Capacity:
+  cpu:                8
+  ephemeral-storage:  490617784Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             16063412Ki
+  pods:               110
+Allocatable:
+  cpu:                8
+  ephemeral-storage:  490617784Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             16063412Ki
+  pods:               110
+System Info:
+  Machine ID:                 4c192b04687c403f8fbb9bc7975b21b3
+  System UUID:                30b462a0-9a07-4d1d-9a9f-2834a906632b
+  Boot ID:                    1534242f-53bc-4758-b107-7a5959b17149
+  Kernel Version:             5.15.0-58-generic
+  OS Image:                   Ubuntu 20.04.4 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  docker://20.10.17
+  Kubelet Version:            v1.24.3
+  Kube-Proxy Version:         v1.24.3
+PodCIDR:                      10.244.0.0/24
+PodCIDRs:                     10.244.0.0/24
+Non-terminated Pods:          (12 in total)
+  Namespace                   Name                                            CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                            ------------  ----------  ---------------  -------------  ---
+  flux-operator               materials-science-0-plbqb                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         16m
+  flux-operator               materials-science-1-hrfvd                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         16m
+  flux-operator               materials-science-2-5d98v                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         16m
+  flux-operator               materials-science-3-stgm5                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         16m
+  kube-system                 coredns-6d4b75cb6d-6x9k6                        100m (1%)     0 (0%)      70Mi (0%)        170Mi (1%)     4h19m
+  kube-system                 etcd-minikube                                   100m (1%)     0 (0%)      100Mi (0%)       0 (0%)         4h19m
+  kube-system                 kube-apiserver-minikube                         250m (3%)     0 (0%)      0 (0%)           0 (0%)         4h19m
+  kube-system                 kube-controller-manager-minikube                200m (2%)     0 (0%)      0 (0%)           0 (0%)         4h19m
+  kube-system                 kube-proxy-4jlfb                                0 (0%)        0 (0%)      0 (0%)           0 (0%)         4h19m
+  kube-system                 kube-scheduler-minikube                         100m (1%)     0 (0%)      0 (0%)           0 (0%)         4h19m
+  kube-system                 storage-provisioner                             0 (0%)        0 (0%)      0 (0%)           0 (0%)         4h19m
+  operator-system             operator-controller-manager-65d89d4ffb-wrmvj    15m (0%)      1 (12%)     128Mi (0%)       256Mi (1%)     56m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                765m (9%)   1 (12%)
+  memory             298Mi (1%)  426Mi (2%)
+  ephemeral-storage  0 (0%)      0 (0%)
+  hugepages-1Gi      0 (0%)      0 (0%)
+  hugepages-2Mi      0 (0%)      0 (0%)
+Events:
+  Type    Reason                   Age                    From             Message
+  ----    ------                   ----                   ----             -------
+  Normal  Starting                 56m                    kube-proxy       
+  Normal  Starting                 16m                    kube-proxy       
+  Normal  Starting                 4h19m                  kube-proxy       
+  Normal  NodeHasSufficientMemory  4h19m (x4 over 4h19m)  kubelet          Node minikube status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    4h19m (x3 over 4h19m)  kubelet          Node minikube status is now: NodeHasNoDiskPressure
+  Normal  NodeHasSufficientPID     4h19m (x3 over 4h19m)  kubelet          Node minikube status is now: NodeHasSufficientPID
+  Normal  NodeHasSufficientPID     4h19m                  kubelet          Node minikube status is now: NodeHasSufficientPID
+  Normal  Starting                 4h19m                  kubelet          Starting kubelet.
+  Normal  NodeHasSufficientMemory  4h19m                  kubelet          Node minikube status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    4h19m                  kubelet          Node minikube status is now: NodeHasNoDiskPressure
+  Normal  NodeReady                4h19m                  kubelet          Node minikube status is now: NodeReady
+  Normal  NodeAllocatableEnforced  4h19m                  kubelet          Updated Node Allocatable limit across pods
+  Normal  RegisteredNode           4h19m                  node-controller  Node minikube event: Registered Node minikube in Controller
+  Normal  NodeAllocatableEnforced  56m                    kubelet          Updated Node Allocatable limit across pods
+  Normal  Starting                 56m                    kubelet          Starting kubelet.
+  Normal  NodeHasSufficientMemory  56m (x8 over 56m)      kubelet          Node minikube status is now: NodeHasSufficientMemory
+  Normal  NodeHasSufficientPID     56m (x7 over 56m)      kubelet          Node minikube status is now: NodeHasSufficientPID
+  Normal  NodeHasNoDiskPressure    56m (x8 over 56m)      kubelet          Node minikube status is now: NodeHasNoDiskPressure
+  Normal  RegisteredNode           56m                    node-controller  Node minikube event: Registered Node minikube in Controller
+  Normal  Starting                 17m                    kubelet          Starting kubelet.
+  Normal  NodeHasSufficientMemory  17m (x8 over 17m)      kubelet          Node minikube status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    17m (x8 over 17m)      kubelet          Node minikube status is now: NodeHasNoDiskPressure
+  Normal  NodeHasSufficientPID     17m (x7 over 17m)      kubelet          Node minikube status is now: NodeHasSufficientPID
+  Normal  NodeAllocatableEnforced  17m                    kubelet          Updated Node Allocatable limit across pods
+  Normal  RegisteredNode           16m                    node-controller  Node minikube event: Registered Node minikube in Controller

@@ -14,8 +14,14 @@ minicluster:
 # same so we specify in the minicluster-template.yaml (one place) instead!
 # Finally, provide the image here for flux cloud to pull
 jobs:
+  # This job just tests to see the contents of data
+  ls-data:
+    image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
+    command: ls /data
+    size: 4  
+       
   # This is just one experiment, you can add another section for another subject id
   scanid-112536:
     image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
-    command: /usr/bin/python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536  
+    command: python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536  
     size: 4

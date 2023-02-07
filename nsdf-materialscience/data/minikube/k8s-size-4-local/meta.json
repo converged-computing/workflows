@@ -1,0 +1,27 @@
+{
+    "times": {
+        "create-cluster": 2.203,
+        "minicluster-run-scanid-112536-minicluster-size-4": 137.294,
+        "minicluster-run-ls-data-minicluster-size-4": 42.248
+    },
+    "size": 4,
+    "minicluster": {
+        "name": "materials-science",
+        "namespace": "flux-operator",
+        "size": [
+            4
+        ]
+    },
+    "jobs": {
+        "ls-data": {
+            "image": "ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04",
+            "command": "ls /data",
+            "size": 4
+        },
+        "scanid-112536": {
+            "image": "ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04",
+            "command": "python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536",
+            "size": 4
+        }
+    }
+}
