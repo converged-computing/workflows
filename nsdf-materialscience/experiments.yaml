@@ -1,0 +1,21 @@
+# matrix of experiments to run
+
+# These are mini runs intended for testing
+matrix:
+  size: [4]
+
+# Flux Mini Cluster experiment attributes
+minicluster:
+  name: materials-science
+  namespace: flux-operator
+  size: [4]
+
+# Each job can have a command / image / working directory, but these all use the
+# same so we specify in the minicluster-template.yaml (one place) instead!
+# Finally, provide the image here for flux cloud to pull
+jobs:
+  # This is just one experiment, you can add another section for another subject id
+  scanid-112536:
+    image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
+    command: /usr/bin/python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536  
+    size: 4

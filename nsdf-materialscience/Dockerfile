@@ -1,11 +1,11 @@
-ARG ubuntu_version=20.04
-FROM ghcr.io/rse-ops/spack-ubuntu-libfabric:ubuntu-${ubuntu_version} as builder
+ARG ubuntu_version=focal
+FROM fluxrm/flux-sched:${ubuntu_version}
 
 ENV FI_EFA_USE_DEVICE_RDMA=1
 ENV RDMAV_FORK_SAFE=1
 ENV DEBIAN_FRONTEND=noninteractive
 
-
+USER root
 WORKDIR /code
 
 # Python packages and script
@@ -16,4 +16,4 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip
 
-RUN python3 -m pip install --user numpy multiprocess opencv-python 
+RUN pip install numpy multiprocess opencv-python 
