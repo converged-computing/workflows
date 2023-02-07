@@ -1,0 +1,37 @@
+apiVersion: flux-framework.org/v1alpha1
+kind: MiniCluster
+
+metadata:
+  name: {{ minicluster.name }}
+  namespace: {{ minicluster.namespace }}
+spec:
+  # localDeploy needs to be true for volumes on the host
+  localDeploy: true
+
+  # Number of pods to create for MiniCluster
+  size: {{ minicluster.size }}
+
+  # Disable verbose output and run timing
+  logging:
+    quiet: false
+    timed: true
+
+  # Named volumes bound to containers, we assume they are all host volumes
+  # This is where I downloaded and extracted my sample datasets
+  volumes:
+    data:      
+      path: /var/data-volumes
+
+  containers:
+    - image: {{ job.image }}
+      workingDir: /data
+      command: {{ job.command }}
+      
+      # This says to mount the volume called "data"  to "/data" in the container
+      volumes:
+        data:
+          path: /data
+          
+      # custom preCommand logic (run at start of script)
+      # here we make sure PATH and Pythonpath are added to flux
+      preCommand: asFlux="sudo -u flux -E PYTHONPATH=$PYTHONPATH -E PATH=$PATH"

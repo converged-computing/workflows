@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import cv2 as cv
@@ -8,22 +9,21 @@ from pathlib import Path
 # This script preprocessed rasiographs to measure the amount of stretch and compression along Silica or any other material
 
 
-def global_directories(name_dir, name_preprocessed_dir, name_average_dir):
-    global directory
-    global preprocessed_directory
-    global average_directory
-    directory = name_dir  # from where you are reading the images (directory)
-    preprocessed_directory = name_preprocessed_dir  # where you are writing the pre-processed images (preprocessed_directory)
-    average_directory = name_average_dir
-
-
-# This function preprocess each image from the radiograph set with a series of steps
-def preprocess(image):
+def preprocess(image, scanid, data_root):
+    """
+    This function preprocess each image from the radiograph set with a series of steps
+    """
     # Read original image
-    print("Reading image: ", image)
-    original_img = cv.imread(directory + "/" + image, cv.IMREAD_GRAYSCALE).astype(
-        np.float32
+    print(f"Reading image: {image}")
+    original_img = cv.imread(image, cv.IMREAD_GRAYSCALE).astype(np.float32)
+    basename = os.path.basename(image)
+
+    # Don't run twice
+    outfile = os.path.join(
+        data_root, "preprocessed", scanid, f"Preprocessed_{basename}"
     )
+    if os.path.exists(outfile):
+        return
 
     # Gaussian blur with sigma=30
     sigma = 30.0
@@ -47,13 +47,13 @@ def preprocess(image):
     rotated_img = cv.rotate(contrast_img, cv.ROTATE_90_CLOCKWISE)
 
     # Save results
-    cv.imwrite(
-        preprocessed_directory + "/Preprocessed_" + image, rotated_img.astype(np.uint8)
-    )
+    cv.imwrite(outfile, rotated_img.astype(np.uint8))
 
 
-# This function averaged by N=4 preprocessed images
-def average(images):
+def average(images, average_dir):
+    """
+    This function averages by N=4 preprocessed images
+    """
     # Get index from first and last image
     names = (
         "Radiographs_"
@@ -61,46 +61,89 @@ def average(images):
         + "--"
         + str(images[-1].split("__")[1].split(".")[0])
     )
-    # print("Read: ", preprocessed_directory+images[0])
+
     # Read first image and make it equal to avg_img
-    avg_image = cv.imread(preprocessed_directory + images[0], cv.IMREAD_GRAYSCALE)
-    # print(len(images))
+    avg_image = cv.imread(images[0], cv.IMREAD_GRAYSCALE)
+
     # Function taken from: https://leslietj.github.io/2020/06/28/How-to-Average-Images-Using-OpenCV/
-    for i in range(len(images)):
+    for i, image in enumerate(images):
         if i == 0:
-            pass
-        else:
-            # Read next image
-            image = cv.imread(
-                preprocessed_directory + "/" + images[i], cv.IMREAD_GRAYSCALE
-            )
-            alpha = 1.0 / (i + 1)
-            beta = 1.0 - alpha
-            # Average image
-            avg_image = cv.addWeighted(image, alpha, avg_image, beta, 0.0)
-    cv.imwrite(average_directory + "/Average_" + names + ".tiff", avg_image)
+            continue
+
+        # Read next image
+        image = cv.imread(image, cv.IMREAD_GRAYSCALE)
+        alpha = 1.0 / (i + 1)
+        beta = 1.0 - alpha
+        # Average image
+        avg_image = cv.addWeighted(image, alpha, avg_image, beta, 0.0)
+
+    average_img = os.path.join(average_dir, f"Average_{names}.tiff")
+    cv.imwrite(average_img, avg_image)
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        description="Radiograph Processor",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    subparsers = parser.add_subparsers(dest="command")
+    preprocess = subparsers.add_parser(
+        "preprocess",
+        description="add an alias to a container recipe.",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    for command in [preprocess]:
+        command.add_argument("data", help="Data root with originals subdirectory.")
+        command.add_argument("scanid", help="Full scan id")
+        command.add_argument(
+            "--n-averages",
+            dest="n_averages",
+            help="Divisor for averaging images, split images by this many (default 4)",
+            default=4,
+        )
+    return parser
+
+
+def main():
+    parser = get_parser()
+
+    # If an error occurs while parsing the arguments, the interpreter will exit with value 2
+    args, extra = parser.parse_known_args()
+
+    # Show args to the user
+    print("       data: %s" % args.data)
+    print("     scanid: %s" % args.scanid)
+    print(" n-averages: %s" % args.n_averages)
+
+    # Data directory must exist with original and scan id
+    data_dir = os.path.join(args.data, "original", args.scanid)
+    if not os.path.exists(data_dir):
+        sys.exit(f"{data_dir} does not exist.")
+
+    data_preprocess = os.path.join(args.data, "preprocessed", args.scanid)
+    data_averaged = os.path.join(args.data, "averaged", args.scanid)
+    for dirname in data_preprocess, data_averaged:
+        Path(dirname).mkdir(parents=True, exist_ok=True)
+
+    # Pre-processing the radiographs in parallel per set
+    original_images = os.listdir(data_dir)
+    listargs = [
+        [os.path.join(data_dir, x), args.scanid, args.data] for x in original_images
+    ]
+    with multiprocessing.Pool() as pool:
+        pool.starmap(preprocess, listargs)
+    print("Finish preprocessing")
+
+    # Averaging by 4 the pre-processed radiographs
+    images = [os.path.join(data_preprocess, x) for x in os.listdir(data_preprocess)]
+    images.sort()
+    sets = int(len(images) / args.n_averages)
+    four_split = np.array_split(images, sets)
+    listargs = [[x, data_averaged] for x in four_split]
+    with multiprocessing.Pool() as pool:
+        pool.starmap(average, listargs)
+    print("Finish averaging")
 
 
 if __name__ == "__main__":
-    directory_preprocess = sys.argv[1]
-    directory_preprocessed = sys.argv[2]
-    directory_averaged = sys.argv[3]
-
-    Path(directory_preprocessed).mkdir(parents=True, exist_ok=True)
-    Path(directory_averaged).mkdir(parents=True, exist_ok=True)
-    global_directories(directory_preprocess, directory_preprocessed, directory_averaged)
-    # Pre-processing the radiographs in parallel per set
-    pool_obj = multiprocessing.Pool()
-    original_images = os.listdir(directory_preprocess)
-    pool_obj.map(preprocess, original_images)
-    print("Finish preprocessing")
-
-    pool_obj = multiprocessing.Pool()
-    # Averaging by 4 the pre-processed radiographs
-    images = os.listdir(directory_preprocessed)
-    n_averages = 4
-    images.sort()
-    sets = int(len(images) / n_averages)
-    four_split = np.array_split(images, sets)
-    pool_obj.map(average, four_split)
-    print("Finish averaging")
+    main()
