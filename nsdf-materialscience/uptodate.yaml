@@ -2,6 +2,6 @@ dockerbuild:
 
   build_args:
     ubuntu_version:
-      key: centos
+      key: ubuntu
       versions:
-       - "latest"
+       - "20.04"

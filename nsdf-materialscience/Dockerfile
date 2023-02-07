@@ -1,15 +1,19 @@
-ARG centos_version=latest
-FROM centos:${centos_version}
+ARG ubuntu_version=20.04
+FROM ghcr.io/rse-ops/spack-ubuntu-libfabric:ubuntu-${ubuntu_version} as builder
 
-RUN cd /etc/yum.repos.d/
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
-    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+ENV FI_EFA_USE_DEVICE_RDMA=1
+ENV RDMAV_FORK_SAFE=1
+ENV DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /home/${USER}
+
+WORKDIR /code
 
 # Python packages and script
-COPY preprocess_radiographs.py /home/${USER}/.
-RUN yum install -y mesa-libGL && \
-    yum install -y python3
-RUN python3 -m pip install -U --force-reinstall pip && \
-    python3 -m pip install --user numpy multiprocess opencv-python 
+COPY preprocess_radiographs.py /code
+
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    python3 \
+    python3-pip
+
+RUN python3 -m pip install --user numpy multiprocess opencv-python 
