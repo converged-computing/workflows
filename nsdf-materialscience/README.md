@@ -1,7 +1,9 @@
 # Radiographics Pre-processing
 
-This workflow is derived from [this repository](https://github.com/nsdf-fabric/nsdf-materialscience/tree/main/python/nsdf/materialscience/radiographics_preprocessing)
-and data (private) is required to run it.
+This workflow is derived from [this repository](https://github.com/nsdf-fabric/nsdf-materialscience/tree/main/python/nsdf/materialscience/radiographics_preprocessing) and data (private) is required to run it.
+
+**Important!** This small tutorial requires this [WIP branch](https://github.com/flux-framework/flux-operator/pull/77) of the Flux Operator,
+meaning it needs to be installed to your MiniCluster manually (and not from, or after, `flux-cloud up`).
 
 ## Tutorial
 

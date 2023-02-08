@@ -8,6 +8,9 @@ spec:
   # Number of pods to create for MiniCluster
   size: {{ minicluster.size }}
 
+  # Cleanup volume (pvc and pv) between jobs
+  cleanup: true
+
   # Disable verbose output and run timing
   logging:
     quiet: false
