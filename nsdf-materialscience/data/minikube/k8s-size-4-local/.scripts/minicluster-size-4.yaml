@@ -5,9 +5,6 @@ metadata:
   name: materials-science
   namespace: flux-operator
 spec:
-  # localDeploy needs to be true for volumes on the host
-  localDeploy: true
-
   # Number of pods to create for MiniCluster
   size: 4
 
@@ -15,18 +12,19 @@ spec:
   logging:
     quiet: false
 
-  # Named volumes bound to containers, we assume they are all host volumes
-  # This is where I downloaded and extracted my sample datasets
+  # Named volumes expected to be in MiniKube VM, OR on kubernetes node 
+  # E.g., for a minikube bind you might do:
+  # minikube bind <host>:<minikube-vm>.
+  # minikube bind /tmp/data-volumes:/tmp/data.
   volumes:
-    data:      
-      path: /tmp/data-volumes
-
+    data:
+      path: /tmp/data
+      
   containers:
     - image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
-      workingDir: /data
       command: python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536
       
-      # This says to mount the volume called "data"  to "/data" in the container
+      # This says to mount the volume called "data" to "/data" in the container
       volumes:
         data:
           path: /data

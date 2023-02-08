@@ -66,18 +66,35 @@ $ docker tag test ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
 $ minikube image load ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
 ```
 
+I found this really useful for development.
+
 #### Mount Data
 
-This isn't handled by flux-cloud yet, so for now we will do:
+The Flux Operator is going to expect to find volumes on the host of a particular storage type.
+Since we are early in development, we currently (as the default) define a "hostpath" storage type,
+meaning the operator will expect the path to be present on the node where you are running the job.
+This means that we need to mount the data on our host into MiniKube (where the cluster is running)
+with `minikube mount`. 
+
+Note that in our [minicluster-template.yaml](minicluster-template.yaml) we are defining the volume on the host to 
+be at `/tmp/data` so let's tell MiniKube to mount our local path there:
 
 ```
-echo "Copying local volume to /tmp/data-volumes in minikube"
+echo "Copying local volume to /tmp/data in minikube"
 # We don't care if this works or not - mkdir -p seems to bork
-minikube ssh -- mkdir -p /tmp/data-volumes
+minikube ssh -- mkdir -p /tmp/data
 
-minikube mount /tmp/data-volumes:/tmp/data-volumes
+minikube mount /tmp/data-volumes:/tmp/data
 ```
 Leave that process running in a window and then open another terminal to interact with the cluster.
+If you want to double check the data is in the MiniKube vm:
+
+```bash
+$ minikube ssh -- ls /tmp/data
+```
+```console
+averaged  original  preprocessed
+```
 
 #### Jobs
 
@@ -108,6 +125,10 @@ press control+C to end it, and then see your results remain:
 
 ```bash
 $ tree /tmp/data-volumes
+```
+```bash
+$ tree /tmp/data-volumes/averaged/ | wc -l
+64
 ```
 
 ## Development Notes

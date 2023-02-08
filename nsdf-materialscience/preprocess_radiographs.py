@@ -117,8 +117,8 @@ def main():
 
     # Data directory must exist with original and scan id
     data_dir = os.path.join(args.data, "original", args.scanid)
-    
-    print(f'Contents of {args.data}:')
+
+    print(f"Contents of {args.data}:")
     print(os.listdir(args.data))
     if not os.path.exists(data_dir):
         sys.exit(f"{data_dir} does not exist.")

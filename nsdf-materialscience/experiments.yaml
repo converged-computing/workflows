@@ -15,10 +15,10 @@ minicluster:
 # Finally, provide the image here for flux cloud to pull
 jobs:
   # This job just tests to see the contents of data
-  ls-data:
-    image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
-    command: ls /data
-    size: 4  
+  # ls-data:
+  #  image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
+  #  command: ls -l /data
+  #  size: 4  
        
   # This is just one experiment, you can add another section for another subject id
   scanid-112536:
