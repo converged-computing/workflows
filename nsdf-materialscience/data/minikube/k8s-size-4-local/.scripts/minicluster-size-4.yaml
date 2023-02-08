@@ -2,11 +2,11 @@ apiVersion: flux-framework.org/v1alpha1
 kind: MiniCluster
 
 metadata:
-  name: {{ minicluster.name }}
-  namespace: {{ minicluster.namespace }}
+  name: materials-science
+  namespace: flux-operator
 spec:
   # Number of pods to create for MiniCluster
-  size: {{ minicluster.size }}
+  size: 4
 
   # Cleanup volume (pvc and pv) between jobs
   cleanup: true
@@ -24,8 +24,8 @@ spec:
       path: /tmp/data
       
   containers:
-    - image: {{ job.image }}
-      command: {{ job.command }}
+    - image: ghcr.io/converged-computing/nsdf-materialscience:ubuntu-20.04
+      command: python3 /code/preprocess_radiographs.py preprocess /data radiographic_scan_id_112536
       
       # This says to mount the volume called "data" to "/data" in the container
       volumes:

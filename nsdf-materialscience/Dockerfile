@@ -14,6 +14,7 @@ COPY preprocess_radiographs.py /code
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     python3 \
-    python3-pip
+    python3-pip \
+    time
 
 RUN pip install numpy multiprocess opencv-python 
